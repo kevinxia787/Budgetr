@@ -62,8 +62,13 @@ public class BudgetStorage {
 		return (int) (Math.abs(sum) % M);
 	}
 	//Insert a specific financial category into the hash table
-	public void insert(String c) {
+	public void insert(String c, int percent) {
 		storage[hash(c, SIZE)] = insertHelper(c, hash(c, SIZE));
+		storage[hash(c, SIZE)].percentOfSalary = percent;
+	}
+	public void insert(String c, double spending) {
+		storage[hash(c, SIZE)] = insertHelper(c, hash(c, SIZE));
+		storage[hash(c, SIZE)].spending = spending;
 	}
 	private Node insertHelper(String c, int location) {
 		if (storage[location] == null) {
@@ -73,5 +78,36 @@ public class BudgetStorage {
 		else {
 			return insertHelper(c, ++location);
 		}
+	}
+	// Return a specific spending value for a specific financial category
+	public double searchSpending(String c) {
+		return storage[hash(c, SIZE)].spending;
+	}
+	public int searchPercent(String c) {
+		return (storage[hash(c, SIZE)].percentOfSalary);
+	}
+	
+	public static void main(String[] args) {
+		
+		BudgetStorage B = new BudgetStorage();
+		B.insert("loans", 447.00);
+		B.insert("groceries", 225.00);
+		
+		System.out.println("Test 01:  Should print out\n" + 447.00);
+		System.out.println(B.searchSpending("loans"));
+		
+		System.out.println("Test 02:  Should print out\n" + 225.00);
+		System.out.println(B.searchSpending("groceries"));
+		
+		BudgetStorage C = new BudgetStorage();
+		C.insert("groceries", 10);
+		C.insert("utilities", 25);
+		
+		System.out.println("Test 01:  Should print out\n" + 10);
+		System.out.println(C.searchPercent("groceries"));
+		
+		System.out.println("Test 02:  Should print out\n" + 25);
+		System.out.println(C.searchPercent("utilities"));
+		
 	}
 }
