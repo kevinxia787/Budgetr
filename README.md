@@ -30,5 +30,12 @@ The node class created has 3 spots, String category for the financial category, 
 First Edit:
 I have completed the hash table and the math functions needed for this program.
 
-My next step is to create a main function first, to ensure the methods in each class are working. Then I will make the transition from java program to java applet.
-          
+My next step is to create a main method first, to ensure the methods in each class are working. Then I will make the transition from java program to java applet. 
+          
+Second Edit:
+
+I have added a main method to the BudgetStorage.java file to test the data structure. So far things are working smoothly. As of 12/28/2016 I have added 2 new methods to the file and updated insert. In my original goal, I planned to have the user pick between designating a percent value of spending or inputing the amount they currently spend. I have facilitated this with two different insert methods, one for percent value(int) and the other for current spending(double).
+
+I also added 2 more methods to access these values. Then we can transition towards a more functional main for the program.
+
+I created a pieChart class based on information from tutorialspoint. The problem with using this class is that it initially defines the slice values within the class. I will figure out a way to define them outside. My current plan is to create a new method that takes in all of the values from BudgetStorage.
