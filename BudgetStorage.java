@@ -37,7 +37,7 @@ public class BudgetStorage {
 		}
 	}
 	
-	private final int SIZE = 19;
+	private final int SIZE = 29;
 	Node [] storage = new Node[SIZE];
 	
 	
