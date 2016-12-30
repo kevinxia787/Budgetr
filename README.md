@@ -39,3 +39,10 @@ I have added a main method to the BudgetStorage.java file to test the data struc
 I also added 2 more methods to access these values. Then we can transition towards a more functional main for the program.
 
 I created a pieChart class based on information from tutorialspoint. The problem with using this class is that it initially defines the slice values within the class. I will figure out a way to define them outside. My current plan is to create a new method that takes in all of the values from BudgetStorage.
+
+
+Third Edit: 
+While creating the main method of BudgetMath I started to think about how I would quickly access all of the values and ensure flawless calculation. When intializing the data structure utilized in BudgetStorage I set all of the values too null. Parsing through each category manually is rather inefficient, and does not allow for other user created categories. 
+
+I think the next step is to make sure all number values are initialized to 0 so when adding them all up to get total spending, it won't be a hassle. 
+I could use an iterator to get the running sum of all values, and store that within a field of the BudgetStorage class.
