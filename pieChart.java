@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-public class pieChart {
+
 	class Slice {
 		double value;
 		Color color;
@@ -40,7 +40,16 @@ public class pieChart {
 			}
 		}
 	}
+	public class pieChart {
+		public static void main(String[] argv) {
+			JFrame frame = new JFrame();
+			frame.getContentPane().add(new MyComponent());
+			frame.setSize(500, 500);
+			frame.setVisible(true);
+			
+		}
+	}
 	
 	
 	
-}
+
