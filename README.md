@@ -32,8 +32,10 @@ I have completed the hash table and the math functions needed for this program.
 
 My next step is to create a main method first, to ensure the methods in each class are working. Then I will make the transition from java program to java applet. 
           
-Second Edit:
 
+
+
+Second Edit:
 I have added a main method to the BudgetStorage.java file to test the data structure. So far things are working smoothly. As of 12/28/2016 I have added 2 new methods to the file and updated insert. In my original goal, I planned to have the user pick between designating a percent value of spending or inputing the amount they currently spend. I have facilitated this with two different insert methods, one for percent value(int) and the other for current spending(double).
 
 I also added 2 more methods to access these values. Then we can transition towards a more functional main for the program.
@@ -46,3 +48,10 @@ While creating the main method of BudgetMath I started to think about how I woul
 
 I think the next step is to make sure all number values are initialized to 0 so when adding them all up to get total spending, it won't be a hassle. 
 I could use an iterator to get the running sum of all values, and store that within a field of the BudgetStorage class.
+
+
+Fourth Edit:
+Added methods that get all of the spending values.
+
+I created a method that returns a ArrayList of doubles that goes through the entire hash map, checks if a given Node is null, and if it isn't, then adds the spending value into the arrayList.
+The second method iterates through the ArrayList and calculates the total spending. This removes the necessity for the totalSpending method in BudgetMath.
