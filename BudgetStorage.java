@@ -77,6 +77,11 @@ public class BudgetStorage {
 		storage[hash(c, SIZE)] = insertHelper(c, hash(c, SIZE));
 		storage[hash(c, SIZE)].spending = spending;
 	}
+	public void insert(String c, double spending, int percent) {
+		storage[hash(c, SIZE)] = insertHelper(c, hash(c, SIZE));
+		storage[hash(c, SIZE)].spending = spending;
+		storage[hash(c, SIZE)].percentOfSalary = percent;
+	}
 	private Node insertHelper(String c, int location) {
 		if (storage[location] == null) {
 			storage[location] = new Node(c);
@@ -163,14 +168,13 @@ public class BudgetStorage {
 		System.out.println("--------------------------");
 		
 		BudgetStorage C = new BudgetStorage();
-		C.insert("Groceries", 10);
-		C.insert("Utilities", 25);
-		C.insert("Rent", 30);
-		C.insert("Loans", 20);
-		C.insert("Transport", 7);
-		C.insert("Savings", 4);
-		C.insert("Recreation", 4);
-		
+		C.insert("Groceries",200.00, 10);
+		C.insert("Utilities", 400.00,  25);
+		C.insert("Rent", 1250.00,  30);
+		C.insert("Loans", 800.00, 20);
+		C.insert("Transport", 100, 7);
+		C.insert("Savings",50, 4);
+		C.insert("Recreation",50, 4);
 		
 		System.out.println("Test 05:  Should print out\n" + 10);
 		System.out.println(C.searchPercent("Groceries"));
@@ -179,8 +183,12 @@ public class BudgetStorage {
 		
 		System.out.println("Test 06:  Should print out\n" + 25);
 		System.out.println(C.searchPercent("Utilities"));
+		System.out.println(C.searchSpending("Utilities"));
 		
 		C.getChart();
+		
+		
+		
 		
 	}
 }
