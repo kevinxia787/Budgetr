@@ -75,3 +75,8 @@ The next goal is to create a main method that utilizes all components of Display
 Sixth Edit:
 
 Added a incomplete main method (still in progress). Hopefully this will allow the program to run smoothly once cI complete the Main class. Will learn how to transition from java program to executable file.
+
+
+Seventh Edit:
+
+An issue with insert came to light after I tried inserting the percent and the spending value and tried to access them. To fix this, I added the main insert method that takes in both the int percent and the double spending. This allows me to change the type of percent to double, which will allow for more accurate percentages.
