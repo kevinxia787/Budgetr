@@ -74,4 +74,4 @@ The next goal is to create a main method that utilizes all components of Display
 
 Sixth Edit:
 
-Added a incomplete main method (still in progress). Hopefully this will allow the program to run smoothly once completed. Will learn how to transition from java program to executable file.
+Added a incomplete main method (still in progress). Hopefully this will allow the program to run smoothly once cI complete the Main class. Will learn how to transition from java program to executable file.
