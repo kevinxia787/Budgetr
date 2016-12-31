@@ -2,6 +2,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class BudgetMath {
+	
 	// Round method from StackOverflow
 	public static double round(double value, int places) {
 		if (places < 0) throw new IllegalArgumentException();
@@ -10,14 +11,21 @@ public class BudgetMath {
 		bd = bd.setScale(places, RoundingMode.HALF_UP);
 		return bd.doubleValue();
 	}
+	
 	// Given Percentage of Desired Spending
 	public static double getPercentValue(double salary, int percent) {
 		return ((percent / 100.0) * salary);
 	}
+	// Find out percent value of spending given spending and salary 
+	public static double getPercentSpending(double salary, double spending) {
+		return round((spending / salary), 2);
+	}
+	
 	// Total Spending 
 	public static double getTotalSpending(double insurance,  double rent, double mortgage, double loanPayment, double utilities, double groceries, double transport ) {
 		return (insurance + rent + mortgage + loanPayment + groceries + utilities + transport);
 	}
+	
 	// What's Left
 	public static double getRemainder(double salary, double insurance,  double rent, double mortgage, double loanPayment, double utilities, double groceries, double transport ) {
 		return (salary - (insurance + rent + mortgage + loanPayment + groceries + utilities + transport));
@@ -32,6 +40,8 @@ public class BudgetMath {
 			return round((p * (i/12)) / ((1 - (Math.pow(1 + (i/12), -n)))), 2);
 		}
 	}
+	
+	//Testing
 	public static void main(String[] args) {
 		double salary = 5000.00;
 		int percent = 5;
