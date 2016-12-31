@@ -1,5 +1,11 @@
 import java.util.ArrayList;
 
+import org.knowm.xchart.PieChart;
+import org.knowm.xchart.PieChartBuilder;
+import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.style.PieStyler.AnnotationType;
+import org.knowm.xchart.style.Styler.ChartTheme;
+
 public class BudgetStorage {
 	
 	private static class Node {
@@ -37,7 +43,7 @@ public class BudgetStorage {
 			return this.category;
 		}
 	}
-	private final int SIZE = 29;
+	private final int SIZE = 199;
 	Node [] storage = new Node[SIZE]; 
 	// Set initial values of percent/spending to 0/0.0
 	
@@ -105,6 +111,30 @@ public class BudgetStorage {
 		}
 		return total;
 	}
+	// Using XChart API to generate pie chart of spending
+	public PieChart getChart() {
+		//Creating Chart
+		PieChart chart = new PieChartBuilder().width(800).height(600).title("Monthly Spending").theme(ChartTheme.GGPlot2).build();
+		
+		//Chart Customization
+		chart.getStyler().setLegendVisible(false);
+		chart.getStyler().setAnnotationType(AnnotationType.LabelAndPercentage);
+		chart.getStyler().setAnnotationDistance(1.15);
+		chart.getStyler().setPlotContentSize(.7);
+		chart.getStyler().setStartAngleInDegrees(90);
+		
+		//Adding data
+		for (int i = 0; i < SIZE; ++i) {
+			if (storage[i] != null) {
+				chart.addSeries(storage[i].category, storage[i].percentOfSalary);
+			}
+		}
+		
+		//Show 
+		new SwingWrapper(chart).displayChart();
+		
+		return chart;
+	}
 	
 	public static void main(String[] args) {
 		
@@ -133,17 +163,24 @@ public class BudgetStorage {
 		System.out.println("--------------------------");
 		
 		BudgetStorage C = new BudgetStorage();
-		C.insert("groceries", 10);
-		C.insert("utilities", 25);
+		C.insert("Groceries", 10);
+		C.insert("Utilities", 25);
+		C.insert("Rent", 30);
+		C.insert("Loans", 20);
+		C.insert("Transport", 7);
+		C.insert("Savings", 4);
+		C.insert("Recreation", 4);
 		
 		
 		System.out.println("Test 05:  Should print out\n" + 10);
-		System.out.println(C.searchPercent("groceries"));
+		System.out.println(C.searchPercent("Groceries"));
 		
 		System.out.println("--------------------------");
 		
 		System.out.println("Test 06:  Should print out\n" + 25);
-		System.out.println(C.searchPercent("utilities"));
+		System.out.println(C.searchPercent("Utilities"));
+		
+		C.getChart();
 		
 	}
 }
