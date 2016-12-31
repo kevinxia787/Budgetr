@@ -70,3 +70,8 @@ An issue: If user ends up inputing current spending, percent will be 0.
 Fix: Within the main method of the program, user will input salary. Salary will be used to calculate the percentages of spending. This will then be inserted into the Hash Table. Afterwards, I will then return the graph.
 
 The next goal is to create a main method that utilizes all components of DisplayYourBudget. Then, I'll aim to transform the entire program into a Java Executiable.
+
+
+Sixth Edit:
+
+Added a incomplete main method (still in progress). Will learn how to transition from java program to executable file.
