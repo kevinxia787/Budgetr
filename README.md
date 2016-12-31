@@ -55,3 +55,18 @@ Added methods that get all of the spending values.
 
 I created a method that returns a ArrayList of doubles that goes through the entire hash map, checks if a given Node is null, and if it isn't, then adds the spending value into the arrayList.
 The second method iterates through the ArrayList and calculates the total spending. This removes the necessity for the totalSpending method in BudgetMath.
+
+
+
+
+
+Fifth Edit:
+
+Deleted pieChart.java
+Instead, utilized XChart API (https://github.com/timmolter/XChart) to create the piechart.
+Piechart method in BudgetStorage traverses through entire hash table and gets the category and percent value.
+
+An issue: If user ends up inputing current spending, percent will be 0. 
+Fix: Within the main method of the program, user will input salary. Salary will be used to calculate the percentages of spending. This will then be inserted into the Hash Table. Afterwards, I will then return the graph.
+
+The next goal is to create a main method that utilizes all components of DisplayYourBudget. Then, I'll aim to transform the entire program into a Java Executiable.
