@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 
 import org.knowm.xchart.PieChart;
@@ -10,43 +11,22 @@ public class BudgetStorage {
 	
 	private static class Node {
 		double spending;
-		int percentOfSalary;
+		double percentOfSalary;
 		String category;
 		
-		// First mode, user enters ALREADY KNOWN spending of categories
-		public Node (double value, String c) {
-			spending = value; percentOfSalary = 0; category = c;
-		}
-		// Second Mode, user enters PERCENTAGE of salary they want to spend for category
-		public Node (int percent, String c) {
-			spending = 0.0; percentOfSalary = percent; category = c;
-		}
-		// Third constructor for just inserting string category
 		public Node(String c) {
 			spending = 0.0; percentOfSalary = 0; category = c;
 		}
 		
-		
-		// Third constructor just for settling entire budget at last stage.
-		public Node (double value, int percent, String c,  Node p) {
+		// Backup constructor just in case;
+		public Node (double value, double percent, String c,  Node p) {
 			spending = value; percentOfSalary = percent; category = c;
 		}
-		
-		// Access Methods for spending/percent/string
-		public Double getSpending() {
-			return this.spending;
-		}
-		public Integer getPercent() {
-			return this.percentOfSalary;
-		}
-		public String getCategory() {
-			return this.category;
-		}
 	}
+	
+	//Initialize Hash Table
 	private final int SIZE = 199;
 	Node [] storage = new Node[SIZE]; 
-	// Set initial values of percent/spending to 0/0.0
-	
 	
 	//Hash Function Here
 	int hash(String c, int M) {
@@ -68,16 +48,10 @@ public class BudgetStorage {
 		}
 		return (int) (Math.abs(sum) % M);
 	}
+	
+	
 	//Insert a specific financial category into the hash table
-	public void insert(String c, int percent) {
-		storage[hash(c, SIZE)] = insertHelper(c, hash(c, SIZE));
-		storage[hash(c, SIZE)].percentOfSalary = percent;
-	}
-	public void insert(String c, double spending) {
-		storage[hash(c, SIZE)] = insertHelper(c, hash(c, SIZE));
-		storage[hash(c, SIZE)].spending = spending;
-	}
-	public void insert(String c, double spending, int percent) {
+	public void insert(String c, double spending, double percent) {
 		storage[hash(c, SIZE)] = insertHelper(c, hash(c, SIZE));
 		storage[hash(c, SIZE)].spending = spending;
 		storage[hash(c, SIZE)].percentOfSalary = percent;
@@ -91,13 +65,16 @@ public class BudgetStorage {
 			return insertHelper(c, ++location);
 		}
 	}
+	
 	// Return a specific spending value for a specific financial category
 	public double searchSpending(String c) {
 		return storage[hash(c, SIZE)].spending;
 	}
-	public int searchPercent(String c) {
+	
+	public double searchPercent(String c) {
 		return (storage[hash(c, SIZE)].percentOfSalary);
 	}
+	
 	//Iterates through the hash table and returns an ArrayList of all spending
 	public ArrayList<Double> getAllSpending() {
 		ArrayList<Double> spending = new ArrayList<Double>();
@@ -108,14 +85,37 @@ public class BudgetStorage {
 		}
 		return spending;
 	}
-	//Iterates through the ArrayList and gets the sum 
-	public double totalSpending(ArrayList<Double> c) {
+	
+	//Iterates through the ArrayList and gets the total Spending 
+		public double totalSpending(ArrayList<Double> c) {
+			double total = 0.0;
+			for (int i = 0; i < c.size(); ++i) {
+				total += c.get(i);
+			}
+			return total;
+		}
+	
+	//Iterates through the hash table and returns an ArrayList of all percentages
+	public ArrayList<Double> getAllPercents() {
+		ArrayList<Double> percents = new ArrayList<Double>();
+		for (int i = 0; i < SIZE; ++i) {
+			if (storage[i] != null) {
+				percents.add(storage[i].percentOfSalary);
+			}
+		}
+		return percents;
+	}
+	
+	//Iterates through ArrayList and gets the total percent
+	public double totalPercent(ArrayList<Double> c) {
 		double total = 0.0;
 		for (int i = 0; i < c.size(); ++i) {
 			total += c.get(i);
 		}
 		return total;
 	}
+	
+	
 	// Using XChart API to generate pie chart of spending
 	public PieChart getChart() {
 		//Creating Chart
@@ -144,10 +144,10 @@ public class BudgetStorage {
 	public static void main(String[] args) {
 		
 		BudgetStorage B = new BudgetStorage();
-		B.insert("loans", 447.00);
-		B.insert("groceries", 225.00);
-		B.insert("rent", 1250.00);
-		B.insert("transport", 100.00);
+		B.insert("loans", 447.00, 23);
+		B.insert("groceries", 225.00, 17);
+		B.insert("rent", 1250.00, 45);
+		B.insert("transport", 100.00, 25);
 		System.out.println("Test 01:  Should print out\n" + 447.00);
 		System.out.println(B.searchSpending("loans"));
 		
@@ -183,7 +183,6 @@ public class BudgetStorage {
 		
 		System.out.println("Test 06:  Should print out\n" + 25);
 		System.out.println(C.searchPercent("Utilities"));
-		System.out.println(C.searchSpending("Utilities"));
 		
 		C.getChart();
 		
