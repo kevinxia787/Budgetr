@@ -18,7 +18,7 @@ public class MainDYB {
 		System.out.println("Please choose between 1 or 2. ");
 		
 		BudgetStorage B = new BudgetStorage();
-		double salary = 0;
+		double salary;
 		double principal; double interest; int period; double loanPayment;
 		double rent; double rentPercent; double groceries; double groceriesPercent;
 		double utilities; double utilitiesPercent; double transportation; double transportationPercent;
@@ -31,7 +31,7 @@ public class MainDYB {
 		//User enters percent of desired spending per category
 		if (choice == 1) {
 			System.out.println("Please enter your salary: ");
-			salary += userInput.nextDouble();
+			salary = userInput.nextDouble();
 			System.out.println("--------------------");
 			System.out.println("1. I have loans.");
 			System.out.println("2. I do not have loans");
@@ -106,7 +106,7 @@ public class MainDYB {
 		}
 		else {
 			System.out.println("Please enter your salary: ");
-			salary += userInput.nextDouble();
+			salary = userInput.nextDouble();
 			System.out.println("--------------------");
 			System.out.println("1. I have loans.");
 			System.out.println("2. I do not have loans");
@@ -139,7 +139,43 @@ public class MainDYB {
 				else { loanPayment = BudgetMath.loanPayment(principal, period, interest, true); }
 				B.insert("Loans", loanPayment, BudgetMath.getPercentSpending(salary, loanPayment));
 			}
+			System.out.println("Please enter spending for Rent: ");
+			rent = userInput.nextDouble();
+			B.insert("Rent", rent, BudgetMath.getPercentSpending(salary, rent));
+			System.out.println("--------------------");
+			System.out.println("Please enter spending for Utilities: ");
+			utilities = userInput.nextDouble();
+			B.insert("Utilities", utilities, BudgetMath.getPercentSpending(salary, utilities));
+			System.out.println("--------------------");
+			System.out.println("Please enter spending for Groceries: "); 
+			groceries = userInput.nextDouble();
+			B.insert("Groceries", groceries, BudgetMath.getPercentSpending(salary, groceries));
+			System.out.println("--------------------");
+			System.out.println("Please enter spending for Transportation: ");
+			transportation = userInput.nextDouble();
+			B.insert("Transportation", transportation, BudgetMath.getPercentSpending(salary, transportation));
+			System.out.println("--------------------");
+			System.out.println("DisplayYourBudget will now calculate the remaining funds for the month, and will split funds into Recreation/Saving/Recreation.");
+			fundsRemaining = BudgetMath.getRemainder(salary, B.totalSpending(B.getAllSpending()));
+			percentRemaining = BudgetMath.getPercentSpending(salary, fundsRemaining);
+			System.out.println("Remaining funds: " + fundsRemaining);
+			System.out.println("Remaining percent: " + percentRemaining);
+			System.out.println("--------------------");
+			recreationPercent = BudgetMath.getSRPercent(percentRemaining);
+			savingsPercent = BudgetMath.getSRPercent(percentRemaining);
+			emergencyPercent = BudgetMath.getEmergencyPercent(percentRemaining);
+			savings = BudgetMath.getPercentValue(salary, savingsPercent);
+			recreation = BudgetMath.getPercentValue(salary, recreationPercent);
+			emergency = BudgetMath.getPercentValue(salary, emergencyPercent);
+			System.out.println("How much you should allocate towards Savings: " + savings);
+			System.out.println("How much you should allocate towards Recreation: " + recreation);
+			System.out.println("How much you should allocate towards Emergency: " + emergency);
+			System.out.println("--------------------");
+			B.insert("Savings", savings, savingsPercent);
+			B.insert("Recreation", recreation, recreationPercent);
+			B.insert("Emergency", emergency, emergencyPercent);
 			
+			B.getChart();
 		}
 	}
 }
