@@ -87,4 +87,5 @@ Added another method in BudgetStorage that traverses the Hash Table and gives al
 In budgetMath I added recommended remainder split, and the methods of BudgetStorage will easily accomodate for this goal.
 Main should be completed in the next few days. 
 
-
+Ninth Edit:
+Main is complete. Program works as expected. Will end up hashing out user interface and clean it up a bit before learning how to transition from main method to an actual executable.
