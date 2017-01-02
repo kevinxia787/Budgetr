@@ -14,7 +14,7 @@ public class BudgetMath {
 	
 	// Given Percentage of Desired Spending
 	public static double getPercentValue(double salary, double percent) {
-		return ((percent / 100.0) * salary);
+		return round(((percent / 100.0) * salary), 2);
 	}
 	// Find out percent value of spending given spending and salary 
 	public static double getPercentSpending(double salary, double spending) {
@@ -23,21 +23,21 @@ public class BudgetMath {
 	
 	// Calculate double value remainder
 	public static double getRemainder(double salary, double totalSpending ) {
-		return (salary - totalSpending);
+		return round((salary - totalSpending), 2);
 	}
 	
 	//Remaining percent calculator
 	public static double getRemainderPercent(double totalPercent) {
-		return (100.00 - totalPercent);
+		return round((100.00 - totalPercent), 2);
 	}
 	
 	//Suggested split of savings/recreation (25% of remainder)
 	public static double getSRPercent (double remainderPercent) {
-		return (.25 * remainderPercent);
+		return round((.25 * remainderPercent), 2);
 	}
 	//Suggested split of emergency fund (50% of remainder);
 	public static double getEmergencyPercent(double remainderPercent) {
-		return (.5 * remainderPercent);
+		return round((.5 * remainderPercent), 2);
 	}
 	
 	
