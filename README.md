@@ -89,3 +89,8 @@ Main should be completed in the next few days.
 
 Ninth Edit:
 Main is complete. Program works as expected. Will end up hashing out user interface and clean it up a bit before learning how to transition from main method to an actual executable.
+
+
+Tenth Edit:
+
+Added a in progress main that will create the executable. Still learning the intricacies of the Java GUI.
