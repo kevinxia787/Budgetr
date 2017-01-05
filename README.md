@@ -100,3 +100,9 @@ Eleventh Edit:
 
 
 Added a cardLayout main. However, I think that this isn't the best way to go about creating the executable. Instead, I am currently learning how to write nested layouts. I have a baseline posted already. I think this will make the program cleaner and easier to use for any user. Learning a lot about layout manager and the different layouts available.
+
+
+Twelfth Edit:
+
+Added a groupLayout to Border.WEST for the value inserts. Also implemented action listeners. Currently working on the logic and inserts of all of the BudgetStorage implementation. 
+Main layout and executable should be finished in a week.
