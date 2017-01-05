@@ -94,3 +94,9 @@ Main is complete. Program works as expected. Will end up hashing out user interf
 Tenth Edit:
 
 Added a in progress main that will create the executable. Still learning the intricacies of the Java GUI.
+
+
+Eleventh Edit:
+
+
+Added a cardLayout main. However, I think that this isn't the best way to go about creating the executable. Instead, I am currently learning how to write nested layouts. I have a baseline posted already. I think this will make the program cleaner and easier to use for any user. Learning a lot about layout manager and the different layouts available.
