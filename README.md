@@ -106,3 +106,8 @@ Twelfth Edit:
 
 Added a groupLayout to Border.WEST for the value inserts. Also implemented action listeners. Currently working on the logic and inserts of all of the BudgetStorage implementation. 
 Main layout and executable should be finished in a week.
+
+
+
+Thirteenth Edit:
+Logic of the nestedLayout is complete. So far the problems I have are the piechart display. Will attempt to learn more about the XChart api and how to insert it into the gui panel. Very close to a working file. Need to also figure out how to create a table of the values for ease of viewing
