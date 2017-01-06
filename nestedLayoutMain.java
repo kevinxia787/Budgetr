@@ -7,18 +7,22 @@ import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.table.DefaultTableModel;
 
+import org.knowm.xchart.PieChart;
+import org.knowm.xchart.XChartPanel;
+
 public class nestedLayoutMain extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel gui, choiceBar, insertPanel, tablePanel, chartPanel;
 	private JButton showBudget;
+	private PieChart chart;
 	
 	public nestedLayoutMain() {
 		
 		BudgetStorage B = new BudgetStorage();
 	
 		setTitle("Display Your Budget");
-		setSize(800, 800);
+		setSize(1000, 1000);
 		JPanel gui = new JPanel(new BorderLayout());
 				
 		// Choice bar at top, implemented using flowlayout and two radio button groups
@@ -59,15 +63,15 @@ public class nestedLayoutMain extends JFrame {
 		JLabel displayLabel = new JLabel("Finish");
 		
 		// JTextFields for side bar
-		JTextField salary = new JTextField("value");
-		JTextField loanPrincipal = new JTextField("value");
-		JTextField interestRate = new JTextField("decimal ");
-		JTextField period = new JTextField("value");
+		JTextField salary = new JTextField("0.0");
+		JTextField loanPrincipal = new JTextField("0.0");
+		JTextField interestRate = new JTextField("0.0");
+		JTextField period = new JTextField("0.0");
 		
-		JTextField rentInsert = new JTextField("value");
-		JTextField utilitiesInsert = new JTextField("value");
-		JTextField groceriesInsert = new JTextField("value");
-		JTextField transportationInsert = new JTextField("value");
+		JTextField rentInsert = new JTextField("0.0");
+		JTextField utilitiesInsert = new JTextField("0.0");
+		JTextField groceriesInsert = new JTextField("0.0");
+		JTextField transportationInsert = new JTextField("0.0");
 		
 		// JLabels for JTextFields
 		JLabel salaryLabel = new JLabel("Insert salary here: ");
@@ -159,22 +163,52 @@ public class nestedLayoutMain extends JFrame {
 				transportationInsert.setText("");
 			}
 		});
+		// Getting values from Text Fields
+		
+		
 		// Button Listener
 		showBudget = new JButton("Display My Budget");
 		showBudget.addActionListener(new ActionListener() {
 	
 			public void actionPerformed(ActionEvent e) {
+				// Loan Components
+				String loanValue = loanPrincipal.getText();
+				String interestValue = interestRate.getText();
+				String periodValue = period.getText();
+				String salaryValue = salary.getText();
+				
+				// parse Values from Strings
+				double loanAmount = Double.parseDouble(loanValue);
+				double interestAmount = Double.parseDouble(interestValue);
+				int periodAmount = Integer.parseInt(periodValue);
+				double salaryAmount = Double.parseDouble(salaryValue);
+				
+				// Rest of the Financial Categories, get texts from textsFields
+				String rentValue = rentInsert.getText();
+				String utilitiesValue = utilitiesInsert.getText();
+				String groceriesValue = groceriesInsert.getText();
+				String transportationValue = transportationInsert.getText();
+				
+				// parse % Values from Strings
+				double rentPercent = Double.parseDouble(rentValue);
+				double utilitiesPercent = Double.parseDouble(utilitiesValue);
+				double groceriesPercent = Double.parseDouble(groceriesValue);
+				double transportationPercent = Double.parseDouble(transportationValue);
+				
+				// parse $ Values from Strings
+				double rentAmount = Double.parseDouble(rentValue);
+				double utilitiesAmount = Double.parseDouble(utilitiesValue);
+				double groceriesAmount = Double.parseDouble(groceriesValue);
+				double transportationAmount = Double.parseDouble(transportationValue);
+				
+				// Remainder Spending Allocation
+				double totalPercent = B.totalPercent(B.getAllPercents());
+				double remainder = BudgetMath.getRemainderPercent(totalPercent);
+				double savingsPercent = BudgetMath.getSRPercent(remainder);
+				double recreationPercent = BudgetMath.getSRPercent(remainder);
+				double emergencyPercent = BudgetMath.getEmergencyPercent(remainder);
 				if (percentBased.isSelected()) {
 					if (loanTrue.isSelected()) {
-						// Loan Components
-						String loanValue = loanPrincipal.getText();
-						double loanAmount = Double.parseDouble(loanValue);
-						String interestValue = interestRate.getText();
-						double interestAmount = Double.parseDouble(interestValue);
-						String periodValue = period.getText();
-						int periodAmount = Integer.parseInt(periodValue);
-						String salaryValue = salary.getText();
-						double salaryAmount = Double.parseDouble(salaryValue);
 						// Inserting loan in BudgetStorage
 						if (monthly.isSelected()) {
 							Double loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, false);
@@ -184,29 +218,84 @@ public class nestedLayoutMain extends JFrame {
 							Double loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, true);
 							B.insert("Loans", loanPayment, BudgetMath.getPercentSpending(salaryAmount, loanPayment));
 						}
-						// Rest of the Financial Categories
+						// Inserting values into BudgetStorage
+						B.insert("Rent", BudgetMath.getPercentValue(salaryAmount, rentPercent), rentPercent);
+						B.insert("Utilities", BudgetMath.getPercentValue(salaryAmount, utilitiesPercent), utilitiesPercent);
+						B.insert("Groceries", BudgetMath.getPercentValue(salaryAmount, groceriesPercent), groceriesPercent);
+						B.insert("Transportation", BudgetMath.getPercentValue(salaryAmount, transportationPercent), transportationPercent);
 						
+						// Inserting remainder
+						B.insert("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent), savingsPercent);
+						B.insert("Emergency", BudgetMath.getPercentValue(salaryAmount, emergencyPercent), emergencyPercent);
+						B.insert("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent), recreationPercent);
 					}
 					else {
+						// Inserting values into BudgetStorage
+						B.insert("Loans", 0.0, 0.0);
+						B.insert("Rent", BudgetMath.getPercentValue(salaryAmount, rentPercent), rentPercent);
+						B.insert("Utilities", BudgetMath.getPercentValue(salaryAmount, utilitiesPercent), utilitiesPercent);
+						B.insert("Groceries", BudgetMath.getPercentValue(salaryAmount, groceriesPercent), groceriesPercent);
+						B.insert("Transportation", BudgetMath.getPercentValue(salaryAmount, transportationPercent), transportationPercent);
 						
+						// Inserting remainder
+						B.insert("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent), savingsPercent);
+						B.insert("Emergency", BudgetMath.getPercentValue(salaryAmount, emergencyPercent), emergencyPercent);
+						B.insert("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent), recreationPercent);
 					}
 				}
 				else {
 					if (loanTrue.isSelected()) {
+						if (monthly.isSelected()) {
+							Double loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, false);
+							B.insert("Loans", loanPayment, BudgetMath.getPercentSpending(salaryAmount, loanPayment));
+						}
+						else {
+							Double loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, true);
+							B.insert("Loans", loanPayment, BudgetMath.getPercentSpending(salaryAmount, loanPayment));
+						}
+						// Inserting values into BudgetStorage
+						B.insert("Rent", rentAmount, BudgetMath.getPercentSpending(salaryAmount, rentAmount));
+						B.insert("Utilities", utilitiesAmount, BudgetMath.getPercentSpending(salaryAmount, utilitiesAmount));
+						B.insert("Groceries", groceriesAmount, BudgetMath.getPercentSpending(salaryAmount, groceriesAmount));
+						B.insert("Transportation", transportationAmount, BudgetMath.getPercentSpending(salaryAmount, transportationAmount));
 						
+						//Inserting remainder
+						B.insert("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent), savingsPercent);
+						B.insert("Emergency", BudgetMath.getPercentValue(salaryAmount, emergencyPercent), emergencyPercent);
+						B.insert("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent), recreationPercent);
 					}
 					else {
+						// Inserting values into BudgetStorage
+						B.insert("Loans", 0.0, 0.0);
+						B.insert("Rent", rentAmount, BudgetMath.getPercentSpending(salaryAmount, rentAmount));
+						B.insert("Utilities", utilitiesAmount, BudgetMath.getPercentSpending(salaryAmount, utilitiesAmount));
+						B.insert("Groceries", groceriesAmount, BudgetMath.getPercentSpending(salaryAmount, groceriesAmount));
+						B.insert("Transportation", transportationAmount, BudgetMath.getPercentSpending(salaryAmount, transportationAmount));
 						
+						//Inserting remainder
+						B.insert("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent), savingsPercent);
+						B.insert("Emergency", BudgetMath.getPercentValue(salaryAmount, emergencyPercent), emergencyPercent);
+						B.insert("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent), recreationPercent);
 					}
 				}
+				
 			}
 			
 		});
+		
+		// Setting up chart Panel
+		
+		chartPanel = new XChartPanel<PieChart>(chart);
+		
+		
+		
+		
 		
 		
 		//add to GUI
 		gui.add(choiceBar, BorderLayout.NORTH);
 		gui.add(insertPanel, BorderLayout.WEST);
+		gui.add(chartPanel, BorderLayout.SOUTH);
 		add(gui);
 				
 				
@@ -218,6 +307,7 @@ public class nestedLayoutMain extends JFrame {
 			public void run() {
 				nestedLayoutMain frame = new nestedLayoutMain();
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.pack();
 				frame.setVisible(true);
 				frame.setLocationRelativeTo(null);
 				
