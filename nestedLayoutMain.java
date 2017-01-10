@@ -1,4 +1,5 @@
 import java.awt.*;
+
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -7,22 +8,29 @@ import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.table.DefaultTableModel;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.data.general.DefaultPieDataset;
 import org.knowm.xchart.PieChart;
+import org.knowm.xchart.PieChartBuilder;
 import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.style.Styler.ChartTheme;
+import org.knowm.xchart.style.Styler.LegendPosition;
 
 public class nestedLayoutMain extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	private JPanel gui, choiceBar, insertPanel, tablePanel, chartPanel;
+	private JPanel gui, choiceBar, insertPanel, tablePanel;
 	private JButton showBudget;
-	private PieChart chart;
 	
 	public nestedLayoutMain() {
 		
 		BudgetStorage B = new BudgetStorage();
 	
 		setTitle("Display Your Budget");
-		setSize(1000, 1000);
+		setSize(800, 1000);
 		JPanel gui = new JPanel(new BorderLayout());
 				
 		// Choice bar at top, implemented using flowlayout and two radio button groups
@@ -66,7 +74,7 @@ public class nestedLayoutMain extends JFrame {
 		JTextField salary = new JTextField("0.0");
 		JTextField loanPrincipal = new JTextField("0.0");
 		JTextField interestRate = new JTextField("0.0");
-		JTextField period = new JTextField("0.0");
+		JTextField period = new JTextField("0");
 		
 		JTextField rentInsert = new JTextField("0.0");
 		JTextField utilitiesInsert = new JTextField("0.0");
@@ -121,6 +129,12 @@ public class nestedLayoutMain extends JFrame {
 		groupLayout.setVerticalGroup(jTFGroupV);
 		
 		// Clear JTextField Upon Clicking
+		salary.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				salary.setText("");
+			}
+		});
 		loanPrincipal.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -163,12 +177,9 @@ public class nestedLayoutMain extends JFrame {
 				transportationInsert.setText("");
 			}
 		});
-		// Getting values from Text Fields
-		
 		
 		// Button Listener
-		showBudget = new JButton("Display My Budget");
-		showBudget.addActionListener(new ActionListener() {
+		displayMyBudget.addActionListener(new ActionListener() {
 	
 			public void actionPerformed(ActionEvent e) {
 				// Loan Components
@@ -209,94 +220,243 @@ public class nestedLayoutMain extends JFrame {
 				double emergencyPercent = BudgetMath.getEmergencyPercent(remainder);
 				if (percentBased.isSelected()) {
 					if (loanTrue.isSelected()) {
+						// Create dataset first
+						DefaultPieDataset dataset = new DefaultPieDataset();
+						double loanPayment;
 						// Inserting loan in BudgetStorage
 						if (monthly.isSelected()) {
-							Double loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, false);
-							B.insert("Loans", loanPayment, BudgetMath.getPercentSpending(salaryAmount, loanPayment));
+							loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, false);
+							dataset.setValue("Loans", loanPayment);
 						}
 						else {
-							Double loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, true);
-							B.insert("Loans", loanPayment, BudgetMath.getPercentSpending(salaryAmount, loanPayment));
+							loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, true);
+							dataset.setValue("Loans", loanPayment);
 						}
-						// Inserting values into BudgetStorage
-						B.insert("Rent", BudgetMath.getPercentValue(salaryAmount, rentPercent), rentPercent);
-						B.insert("Utilities", BudgetMath.getPercentValue(salaryAmount, utilitiesPercent), utilitiesPercent);
-						B.insert("Groceries", BudgetMath.getPercentValue(salaryAmount, groceriesPercent), groceriesPercent);
-						B.insert("Transportation", BudgetMath.getPercentValue(salaryAmount, transportationPercent), transportationPercent);
+						// Creating chart
+						dataset.setValue("Rent", BudgetMath.getPercentValue(salaryAmount, rentPercent));
+						dataset.setValue("Utilites", BudgetMath.getPercentValue(salaryAmount, utilitiesPercent));
+						dataset.setValue("Groceries", BudgetMath.getPercentValue(salaryAmount, groceriesPercent));
+						dataset.setValue("Transportation", BudgetMath.getPercentValue(salaryAmount, transportationPercent));
+						dataset.setValue("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent));
+						dataset.setValue("Emergency",  BudgetMath.getPercentValue(salaryAmount, emergencyPercent));
+						dataset.setValue("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent));
+						JFreeChart chart = ChartFactory.createPieChart(
+								"Monthly Spending",
+								dataset, 
+								true, 
+								true, 
+								false
+						);
+						PiePlot plot = (PiePlot) chart.getPlot();
+						plot.setLabelFont(new Font("Arial", Font.PLAIN, 9));
+						plot.setNoDataMessage("No Data available");
+						plot.setCircular(false);
+						plot.setLabelGap(0.02);
 						
-						// Inserting remainder
-						B.insert("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent), savingsPercent);
-						B.insert("Emergency", BudgetMath.getPercentValue(salaryAmount, emergencyPercent), emergencyPercent);
-						B.insert("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent), recreationPercent);
+						ChartPanel chPanel = new ChartPanel(chart);
+						chPanel.setPreferredSize(new Dimension(400, 600));
+						chPanel.setMouseWheelEnabled(true);
+						gui.add(chPanel, BorderLayout.SOUTH);
+						
+						// Create a table
+						String[] columnNames = {"Category", "Spending"};
+						Object[][] data = {
+								{"Loans", loanPayment},
+								{"Rent", BudgetMath.getPercentValue(salaryAmount, rentPercent)},
+								{"Utilities", BudgetMath.getPercentValue(salaryAmount, utilitiesPercent)},
+								{"Groceries", BudgetMath.getPercentValue(salaryAmount, groceriesPercent)},
+								{"Transportation", BudgetMath.getPercentValue(salaryAmount, transportationPercent)},
+								{"Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent)},
+								{"Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent)},
+								{"Emergency",  BudgetMath.getPercentValue(salaryAmount, emergencyPercent)}
+						};
+						
+						JTable table = new JTable(data, columnNames);
+						JScrollPane scrollPane = new JScrollPane(table);
+						scrollPane.setPreferredSize(new Dimension(300, 300));
+						JPanel tablePanel = new JPanel();
+						tablePanel.add(table);
+						gui.add(tablePanel, BorderLayout.EAST);
+						
+						gui.validate();
+						gui.repaint();
+			
 					}
 					else {
-						// Inserting values into BudgetStorage
-						B.insert("Loans", 0.0, 0.0);
-						B.insert("Rent", BudgetMath.getPercentValue(salaryAmount, rentPercent), rentPercent);
-						B.insert("Utilities", BudgetMath.getPercentValue(salaryAmount, utilitiesPercent), utilitiesPercent);
-						B.insert("Groceries", BudgetMath.getPercentValue(salaryAmount, groceriesPercent), groceriesPercent);
-						B.insert("Transportation", BudgetMath.getPercentValue(salaryAmount, transportationPercent), transportationPercent);
+						//Getting chart
+						DefaultPieDataset dataset = new DefaultPieDataset();
+						dataset.setValue("Rent", BudgetMath.getPercentValue(salaryAmount, rentPercent));
+						dataset.setValue("Utilites", BudgetMath.getPercentValue(salaryAmount, utilitiesPercent));
+						dataset.setValue("Groceries", BudgetMath.getPercentValue(salaryAmount, groceriesPercent));
+						dataset.setValue("Transportation", BudgetMath.getPercentValue(salaryAmount, transportationPercent));
+						dataset.setValue("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent));
+						dataset.setValue("Emergency",  BudgetMath.getPercentValue(salaryAmount, emergencyPercent));
+						dataset.setValue("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent));
+						JFreeChart chart = ChartFactory.createPieChart(
+								"Monthly Spending",
+								dataset, 
+								true, 
+								true, 
+								false
+						);
+						PiePlot plot = (PiePlot) chart.getPlot();
+						plot.setLabelFont(new Font("Arial", Font.PLAIN, 9));
+						plot.setNoDataMessage("No Data available");
+						plot.setCircular(false);
+						plot.setLabelGap(0.02);
 						
-						// Inserting remainder
-						B.insert("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent), savingsPercent);
-						B.insert("Emergency", BudgetMath.getPercentValue(salaryAmount, emergencyPercent), emergencyPercent);
-						B.insert("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent), recreationPercent);
+						ChartPanel chPanel = new ChartPanel(chart);
+						chPanel.setPreferredSize(new Dimension(400, 600));
+						chPanel.setMouseWheelEnabled(true);
+						gui.add(chPanel, BorderLayout.SOUTH);
+						
+						// Create a table
+						String[] columnNames = {"Category", "Spending"};
+						Object[][] data = {
+								{"Loans", 0},
+								{"Rent", BudgetMath.getPercentValue(salaryAmount, rentPercent)},
+								{"Utilities", BudgetMath.getPercentValue(salaryAmount, utilitiesPercent)},
+								{"Groceries", BudgetMath.getPercentValue(salaryAmount, groceriesPercent)},
+								{"Transportation", BudgetMath.getPercentValue(salaryAmount, transportationPercent)},
+								{"Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent)},
+								{"Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent)},
+								{"Emergency",  BudgetMath.getPercentValue(salaryAmount, emergencyPercent)}
+						};
+						
+						JTable table = new JTable(data, columnNames);
+						JScrollPane scrollPane = new JScrollPane(table);
+						scrollPane.setPreferredSize(new Dimension(250, 250));
+						JPanel tablePanel = new JPanel();
+						tablePanel.add(table);
+						gui.add(tablePanel, BorderLayout.EAST);
+						gui.validate();
+						gui.repaint();
+
 					}
 				}
 				else {
 					if (loanTrue.isSelected()) {
+						DefaultPieDataset dataset = new DefaultPieDataset();
+						double loanPayment;
 						if (monthly.isSelected()) {
-							Double loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, false);
-							B.insert("Loans", loanPayment, BudgetMath.getPercentSpending(salaryAmount, loanPayment));
+							loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, false);
+							dataset.setValue("Loans", loanPayment);
 						}
 						else {
-							Double loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, true);
-							B.insert("Loans", loanPayment, BudgetMath.getPercentSpending(salaryAmount, loanPayment));
+							loanPayment = BudgetMath.loanPayment(loanAmount, periodAmount, interestAmount, true);
+							dataset.setValue("Loans", loanPayment);
 						}
-						// Inserting values into BudgetStorage
-						B.insert("Rent", rentAmount, BudgetMath.getPercentSpending(salaryAmount, rentAmount));
-						B.insert("Utilities", utilitiesAmount, BudgetMath.getPercentSpending(salaryAmount, utilitiesAmount));
-						B.insert("Groceries", groceriesAmount, BudgetMath.getPercentSpending(salaryAmount, groceriesAmount));
-						B.insert("Transportation", transportationAmount, BudgetMath.getPercentSpending(salaryAmount, transportationAmount));
 						
-						//Inserting remainder
-						B.insert("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent), savingsPercent);
-						B.insert("Emergency", BudgetMath.getPercentValue(salaryAmount, emergencyPercent), emergencyPercent);
-						B.insert("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent), recreationPercent);
+						// Getting chart
+						dataset.setValue("Rent", rentAmount);
+						dataset.setValue("Utilites", utilitiesAmount);
+						dataset.setValue("Groceries", groceriesAmount);
+						dataset.setValue("Transportation", transportationAmount);
+						dataset.setValue("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent));
+						dataset.setValue("Emergency",  BudgetMath.getPercentValue(salaryAmount, emergencyPercent));
+						dataset.setValue("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent));
+						JFreeChart chart = ChartFactory.createPieChart(
+								"Monthly Spending",
+								dataset, 
+								true, 
+								true, 
+								false
+						);
+						PiePlot plot = (PiePlot) chart.getPlot();
+						plot.setLabelFont(new Font("Arial", Font.PLAIN, 9));
+						plot.setNoDataMessage("No Data available");
+						plot.setCircular(false);
+						plot.setLabelGap(0.02);
+						
+						ChartPanel chPanel = new ChartPanel(chart);
+						chPanel.setPreferredSize(new Dimension(400, 600));
+						chPanel.setMouseWheelEnabled(true);
+						gui.add(chPanel, BorderLayout.SOUTH);
+						
+						// Create table
+						String[] columnNames = {"Category", "Spending"};
+						Object[][] data = {
+								{"Loans", loanPayment},
+								{"Rent", rentAmount},
+								{"Utilities", utilitiesAmount},
+								{"Groceries", groceriesAmount},
+								{"Transportation", transportationAmount},
+								{"Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent)},
+								{"Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent)},
+								{"Emergency",  BudgetMath.getPercentValue(salaryAmount, emergencyPercent)}
+						};
+						
+						JTable table = new JTable(data, columnNames);
+						JScrollPane scrollPane = new JScrollPane(table);
+						scrollPane.setPreferredSize(new Dimension(300, 300));
+						JPanel tablePanel = new JPanel();
+						tablePanel.add(table);
+						gui.add(tablePanel, BorderLayout.EAST);
+						gui.validate();
+						gui.repaint();
+
 					}
 					else {
-						// Inserting values into BudgetStorage
-						B.insert("Loans", 0.0, 0.0);
-						B.insert("Rent", rentAmount, BudgetMath.getPercentSpending(salaryAmount, rentAmount));
-						B.insert("Utilities", utilitiesAmount, BudgetMath.getPercentSpending(salaryAmount, utilitiesAmount));
-						B.insert("Groceries", groceriesAmount, BudgetMath.getPercentSpending(salaryAmount, groceriesAmount));
-						B.insert("Transportation", transportationAmount, BudgetMath.getPercentSpending(salaryAmount, transportationAmount));
+						// Getting chart
+						DefaultPieDataset dataset = new DefaultPieDataset();
+						dataset.setValue("Rent", BudgetMath.getPercentValue(salaryAmount, rentPercent));
+						dataset.setValue("Utilites", BudgetMath.getPercentValue(salaryAmount, utilitiesPercent));
+						dataset.setValue("Groceries", BudgetMath.getPercentValue(salaryAmount, groceriesPercent));
+						dataset.setValue("Transportation", BudgetMath.getPercentValue(salaryAmount, transportationPercent));
+						dataset.setValue("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent));
+						dataset.setValue("Emergency",  BudgetMath.getPercentValue(salaryAmount, emergencyPercent));
+						dataset.setValue("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent));
+						JFreeChart chart = ChartFactory.createPieChart(
+								"Monthly Spending",
+								dataset, 
+								true, 
+								true, 
+								false
+						);
+						PiePlot plot = (PiePlot) chart.getPlot();
+						plot.setLabelFont(new Font("Arial", Font.PLAIN, 9));
+						plot.setNoDataMessage("No Data available");
+						plot.setCircular(false);
+						plot.setLabelGap(0.02);
 						
-						//Inserting remainder
-						B.insert("Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent), savingsPercent);
-						B.insert("Emergency", BudgetMath.getPercentValue(salaryAmount, emergencyPercent), emergencyPercent);
-						B.insert("Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent), recreationPercent);
+						ChartPanel chPanel = new ChartPanel(chart);
+						chPanel.setPreferredSize(new Dimension(400, 600));
+						chPanel.setMouseWheelEnabled(true);
+						gui.add(chPanel, BorderLayout.SOUTH);
+						
+						// Create table
+						String[] columnNames = {"Category", "Spending"};
+						Object[][] data = {
+								{"Loans", 0},
+								{"Rent", rentAmount},
+								{"Utilities", utilitiesAmount},
+								{"Groceries", groceriesAmount},
+								{"Transportation", transportationAmount},
+								{"Savings", BudgetMath.getPercentValue(salaryAmount, savingsPercent)},
+								{"Recreation", BudgetMath.getPercentValue(salaryAmount, recreationPercent)},
+								{"Emergency",  BudgetMath.getPercentValue(salaryAmount, emergencyPercent)}
+						};
+						
+						JTable table = new JTable(data, columnNames);
+						
+						JScrollPane scrollPane = new JScrollPane(table);
+						scrollPane.setPreferredSize(new Dimension(300, 300));
+						JPanel tablePanel = new JPanel();
+						tablePanel.add(table);
+						gui.add(tablePanel, BorderLayout.EAST);
+						gui.validate();
+						gui.repaint();
 					}
 				}
 				
+				
 			}
-			
 		});
-		
-		// Setting up chart Panel
-		
-		chartPanel = new XChartPanel<PieChart>(chart);
-		
-		
-		
-		
-		
 		
 		//add to GUI
 		gui.add(choiceBar, BorderLayout.NORTH);
 		gui.add(insertPanel, BorderLayout.WEST);
-		gui.add(chartPanel, BorderLayout.SOUTH);
-		add(gui);
+		this.add(gui);
 				
 				
 	}		
@@ -307,7 +467,6 @@ public class nestedLayoutMain extends JFrame {
 			public void run() {
 				nestedLayoutMain frame = new nestedLayoutMain();
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.pack();
 				frame.setVisible(true);
 				frame.setLocationRelativeTo(null);
 				
