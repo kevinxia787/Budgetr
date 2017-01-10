@@ -111,3 +111,9 @@ Main layout and executable should be finished in a week.
 
 Thirteenth Edit:
 Logic of the nestedLayout is complete. So far the problems I have are the piechart display. Will attempt to learn more about the XChart api and how to insert it into the gui panel. Very close to a working file. Need to also figure out how to create a table of the values for ease of viewing
+
+
+Fourteenth Edit:
+
+I'm an idiot. I had a bug with the button that displayed the graph and didn't apply the actionlistner to the button but to a different one.
+I have completed the main file for DisplayYourBudget. However, due to the previous bug I assumed there was something wrong with the code, so instead I removed the XChart api and decided to use JFreeCharts instead. The plan is to create an executable for this main class, then in the future find a way to apply BudgetStorage.
