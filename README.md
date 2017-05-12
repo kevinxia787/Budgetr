@@ -117,3 +117,10 @@ Fourteenth Edit:
 
 I'm an idiot. I had a bug with the button that displayed the graph and didn't apply the actionlistner to the button but to a different one.
 I have completed the main file for DisplayYourBudget. However, due to the previous bug I assumed there was something wrong with the code, so instead I removed the XChart api and decided to use JFreeCharts instead. The plan is to create an executable for this main class, then in the future find a way to apply BudgetStorage.
+
+
+5/11/2017
+After a Complete Look over the app, it's pretty shit.
+
+New updates as of 2017. Looking to rehaul entire backend and front end through rebuilding the backend algorithms while also attempting to learn JavaFX to create a cleaner gui application.
+More to come'
