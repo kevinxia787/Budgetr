@@ -31,10 +31,10 @@ public class BudgetrMath {
 	
 	public static double loanPayment(double p, double n, double i, boolean yearly) {
 		if (yearly) {
-			return rounder((p * i) / ((1 - (Math.pow(1 + i, -n)))));
+			return rounder((p * (i/100)) / ((1 - (Math.pow(1 + (i/100), -n)))));
 		}
 		else {
-			return rounder((p * i/12) / ((1 - (Math.pow(i + i, -n)))));
+			return rounder((p * ((i/100)/12)) / ((1 - (Math.pow(i + (i/100), -n)))));
 		}
 	}
 	
