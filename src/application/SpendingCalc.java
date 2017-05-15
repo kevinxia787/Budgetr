@@ -44,13 +44,13 @@ public class SpendingCalc {
 			double remainder = 100.0 - totalPercentage;
 			// Handle Emergency
 			double emergencyPercentage = 0.5 * remainder;
-			valueMap.put("Emergency", emergencyPercentage);
+			valueMap.put("Emergency", BudgetrMath.rounder(emergencyPercentage));
 			// Handle Recreation
 			double recreationPercentage = 0.25 * remainder;
-			valueMap.put("Recreation", recreationPercentage);
+			valueMap.put("Recreation", BudgetrMath.rounder(recreationPercentage));
 			// Handle Savings
 			double savingsPercentage = 0.25 * remainder;
-			valueMap.put("Savings",  savingsPercentage);
+			valueMap.put("Savings",  BudgetrMath.rounder(savingsPercentage));
 		}
 			
 		return valueMap;
