@@ -123,4 +123,15 @@ I have completed the main file for DisplayYourBudget. However, due to the previo
 After a Complete Look over the app, it's pretty shit.
 
 New updates as of 2017. Looking to rehaul entire backend and front end through rebuilding the backend algorithms while also attempting to learn JavaFX to create a cleaner gui application.
-More to come'
+More to come.
+
+
+Current Version: Version 1.0
+Finished UI, backend works well.
+UI looks much cleaner than previous version
+Testing for bugs, but for now it seems "bug free," will have to think about special cases and go over math to make sure there are no arithmetic errors.
+
+Changelog:
+(As of June 2, 2017)
+UI update with javaFX
+Backend rehaul with cleaner methods
