@@ -132,15 +132,14 @@ UI looks much cleaner than previous version
 Testing for bugs, but for now it seems "bug free," will have to think about special cases and go over math to make sure there are no arithmetic errors.
 
 06/07/2017
-Seems to be an issue with loan calculation, specificially Spending/Annual Interest
+Seems to be an issue with loan calculation, specificially Spending/Monthly Interest
 Values Tested: Principal: 25000
                Interest: 5
                Period: 48
 Value Given: 1383.0
 Value Expected: 575.73
-
-However, following the documentation on investopedia gives the correct formula implemented in my math class...
-Will dive deeper
+APR (interest) rate should be divided by 12 when monthly is selected. 
+Annual is working as expected
 
 Changelog:
 (As of June 2, 2017)
