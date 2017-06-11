@@ -34,7 +34,7 @@ public class BudgetrMath {
 			return rounder((p * (i/100)) / ((1 - (Math.pow(1 + (i/100), -n)))));
 		}
 		else {
-			return rounder((p * ((i/100)/12)) / ((1 - (Math.pow(i + HERE(i/100)HERE, -n)))));
+			return rounder((p * ((i/100)/12)) / ((1 - (Math.pow(i + ((i/100)/12), -n)))));
 		}
 	}
 	
