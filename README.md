@@ -1,4 +1,4 @@
-# DisplayYourBudget
+# Budgetr
 
 
 Goal Of This Project:
@@ -140,8 +140,11 @@ Value Given: 1383.0
 Value Expected: 575.73
 APR (interest) rate should be divided by 12 when monthly is selected. 
 Annual is working as expected
+--BUG FIXED--
 
 Changelog:
 (As of June 2, 2017)
 UI update with javaFX
 Backend rehaul with cleaner methods
+(As of June 10, 2017)
+Fixed bug with monthly interest, values as expected
